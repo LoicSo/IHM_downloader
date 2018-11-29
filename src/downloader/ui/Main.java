@@ -35,6 +35,9 @@ public class Main extends Application {
 
 		// Champs pour ajouter un fichier
 		TextField txt = new TextField();
+		txt.setPrefWidth(457);
+		txt.setPromptText("enter a URL");
+		
 
 		// Bouton pour ajouter le fichier a telecharger
 		Button add = new Button("add");
