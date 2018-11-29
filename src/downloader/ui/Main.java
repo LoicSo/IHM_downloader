@@ -26,21 +26,23 @@ public class Main extends Application {
 		// Pour chaque fichier 
 		for(String url: getParameters().getRaw()) {
 
-			Download d = new Download(url);
+			Download d = new Download(url, box);
 
 			// ajoute la progressBar a la VBox
-			box.getChildren().add(d.getPb());
+			box.getChildren().add(d);
 
 		}
-
+		
 		// Champs pour ajouter un fichier
 		TextField txt = new TextField();
+		txt.setPrefWidth(450);
 
 		// Bouton pour ajouter le fichier a telecharger
 		Button add = new Button("add");
 		add.setOnAction( e -> {
-			Download d =  new Download(txt.getText());
-			box.getChildren().add(d.getPb());
+			Download d =  new Download(txt.getText(), box);
+			box.getChildren().add(d);
+			txt.clear();
 		});
 
 		HBox hb = new HBox();

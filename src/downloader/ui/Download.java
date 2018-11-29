@@ -2,61 +2,80 @@ package downloader.ui;
 
 import downloader.fc.Downloader;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-public class Download {
-	VBox box;
+public class Download extends VBox{
 	
-	public Download(String url) {
+	VBox root;
+	
+	public Download(String url, VBox root) {
+		
+		// On récupère la liste des téléchargements
+		this.root = root;
 		
 		Downloader downloader = null;
 		try {
 			// Nouveau telechargement
 			downloader = new Downloader(url);
-		}
-		catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			System.err.format("skipping %s %s\n", url, e);
+			throw e;
 		}
-		
+
 		// thread qui execute le telechargement du fichier
 		Thread t = new Thread(downloader);
-
-		box = new VBox();
 		
-		// nom du fichier a telecharger 
+		// nom du fichier a telecharger
 		Label text = new Label(url);
-		
-		// ProgressBar + boutons play et pause
+
+		// ProgressBar + boutons play/pause et supprimer
 		HBox hb = new HBox();
-		
-		Button play = new Button("play");
-		Button pause = new Button("supprimer");
-		
+
+		// Bouton play/pause
+		ToggleButton play = new ToggleButton("play");
+		play.setOnAction(e -> {
+			if(play.isSelected()) {
+				play.setText("pause");
+				//downloader.pause();
+			}
+			else {
+				play.setText("play");
+				//downloader.play();
+			}
+		});
+
+		// Bouton supprimer
+		Button suppr = new Button("supprimer");
+		suppr.setOnAction(e -> {
+			t.interrupt();
+			remove();
+		});
+
 		// ProgressBar qui represente le telechargement
 		ProgressBar pb = new ProgressBar();
 		pb.setPrefWidth(330);
 		pb.setPrefHeight(25);
-		
+
 		downloader.progressProperty().addListener((obs, o, n) -> {
 			Platform.runLater(() -> pb.setProgress((double) n));
 		});
-		
+
 		hb.setSpacing(2);
-		hb.getChildren().addAll(pb, play, pause);
-		
-		box.setSpacing(2);
-		box.getChildren().addAll(text, hb);
-		
+		hb.getChildren().addAll(pb, play, suppr);
+
+		this.setSpacing(2);
+		this.getChildren().addAll(text, hb);
+
 		// lancement du thread
-		t.start();	
+		t.start();
 	}
-	
-	VBox getPb() {
-		return box;
+
+	void remove() {
+		root.getChildren().remove(this);
 	}
 }

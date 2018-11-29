@@ -88,8 +88,19 @@ public class Downloader implements Runnable {
 			download();
 		}
 		catch(InterruptedException e) {
-			throw new RuntimeException(e);
+			//throw new RuntimeException(e);
+			System.out.println("Download du fichier " + url.toString() + " arrêté");
 		}
+	}
+
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void play() {
+		// TODO Auto-generated method stub
+		
 	}
 
 };
