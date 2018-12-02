@@ -52,7 +52,7 @@ public class Main extends Application {
 		root.setCenter(liste);
 		root.setBottom(hb);
 		
-		stage.setTitle("Downloader - Loic Souchon && Jade Vandal");
+		stage.setTitle("Downloader - Loic Souchon & Jade Vandal");
 		stage.setScene(new Scene(root, 500, 500));
 		stage.show();
 	}

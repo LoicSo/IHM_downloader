@@ -12,13 +12,13 @@ import javafx.scene.layout.VBox;
 public class Download extends VBox{
 	
 	VBox root;
+	Downloader downloader;
 	
 	public Download(String url, VBox root) {
 		
 		// On récupère la liste des téléchargements
 		this.root = root;
 		
-		Downloader downloader = null;
 		try {
 			// Nouveau telechargement
 			downloader = new Downloader(url);
@@ -37,15 +37,15 @@ public class Download extends VBox{
 		HBox hb = new HBox();
 
 		// Bouton play/pause
-		ToggleButton play = new ToggleButton("play");
+		ToggleButton play = new ToggleButton("pause");
 		play.setOnAction(e -> {
 			if(play.isSelected()) {
-				play.setText("pause");
-				//downloader.pause();
+				play.setText("play");
+				downloader.setPause(true);
 			}
 			else {
-				play.setText("play");
-				//downloader.play();
+				play.setText("pause");
+				downloader.play();
 			}
 		});
 
