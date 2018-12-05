@@ -41,7 +41,7 @@ public class Download extends VBox{
 		play.setOnAction(e -> {
 			if(play.isSelected()) {
 				play.setText("play");
-				downloader.setPause(true);
+				downloader.pause();
 			}
 			else {
 				play.setText("pause");
@@ -52,7 +52,7 @@ public class Download extends VBox{
 		// Bouton supprimer
 		Button suppr = new Button("supprimer");
 		suppr.setOnAction(e -> {
-			t.interrupt();
+			downloader.cancel();
 			remove();
 		});
 

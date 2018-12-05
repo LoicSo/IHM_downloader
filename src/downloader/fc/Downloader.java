@@ -29,9 +29,7 @@ public class Downloader extends Task<String> {
 	int size = 0;
 	int count = 0;
 
-	static ReentrantLock lock = new ReentrantLock();
-	boolean notified = false;
-	boolean pause = false;
+	ReentrantLock lock = new ReentrantLock();
 
 	public Downloader(String uri) {
 		try {
@@ -61,16 +59,12 @@ public class Downloader extends Task<String> {
 	// return progress.getReadOnlyProperty();
 	// }
 
-	protected synchronized String download() throws InterruptedException {
+	protected String download() throws InterruptedException {
 		byte buffer[] = new byte[CHUNK_SIZE];
 
 		while (count >= 0) {
 			lock.lock();
-			try {
-				if(pause) {
-					pause();
-				}
-				
+			try {	
 				try {
 					out.write(buffer, 0, count);
 				} catch (IOException e) {
@@ -80,9 +74,11 @@ public class Downloader extends Task<String> {
 				size += count;
 				updateProgress(size, content_length);
 				// progress.setValue(1.*size/content_length);
-
+				
+				lock.unlock();
 				Thread.sleep(1000);
-
+				lock.lock();
+				
 				try {
 					count = in.read(buffer, 0, CHUNK_SIZE);
 				} catch (IOException e) {
@@ -111,26 +107,13 @@ public class Downloader extends Task<String> {
 	// System.out.println("Download du fichier " + url.toString() + " arrêté");
 	// }
 	// }
-	
-	public void setPause(boolean p) {
-		pause = p;
+
+	public void pause() {
+		lock.lock();
 	}
 
-	public synchronized void pause() {
-		while (!notified) {
-			try {
-				lock.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		pause = false;
-		notified = false;
-	}
-
-	public synchronized void play() {
-		notified = true;
-		lock.notify();
+	public void play() {
+		lock.unlock();
 	}
 
 	@Override
